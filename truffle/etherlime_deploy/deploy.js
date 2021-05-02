@@ -11,7 +11,8 @@ const contract_templates = {
 var undef;
 
 const defaultConfigs = {
-    gasPrice: 8000000000,
+    //gasPrice: 8000000000,
+    gasPrice: 1000000000000,
     gasLimit: 6000000,
     etherscanApiKey: 'TPA4BFDDIH8Q7YBQ4JMGN6WDDRRPAV6G34'
 }
@@ -31,11 +32,13 @@ const networks = {
     'goerli': 5,
     'kovan': 42,
     'sokol': 77,
-    'xdai': 100
+    'xdai': 100,
+    'iotx': 4690
 }
 const non_infura_networks = {
     'xdai': 'https://xdai.poanetwork.dev',
-    'sokol': 'https://sokol.poa.network'
+    'sokol': 'https://sokol.poa.network',
+    'iotx': 'http://35.184.32.217:8545'
 }
 
 
@@ -59,7 +62,7 @@ if (token_name == undef) {
     usage_error("token_name not supplied");
 }
 
-if ((token_name != 'XDAI' && token_name != 'ETH' && token_address == undef) && (task != 'ERC20')) {
+if ((token_name != 'XDAI' && token_name != 'ETH' && token_name != 'IOTX' && token_address == undef) && (task != 'ERC20')) {
     usage_error("token_address not supplied");
 }
 
@@ -68,7 +71,8 @@ if (arb_fee == undef) {
 }
 
 if (arbitrator_owner == undef) {
-    arbitrator_owner = "0xdd8a989e5e89ad23ed2f91c6f106aea678a1a3d0";
+    arbitrator_owner = "0x87eea07540789af85b64947aea21a3f00400b597";
+    //arbitrator_owner = "0xdd8a989e5e89ad23ed2f91c6f106aea678a1a3d0";
 }
 
 
@@ -84,7 +88,7 @@ if (task == 'Realitio') {
 
 function token_contract_file(contract_type, path, token) {
     // NB We store XDAI in the Realitio.json file as it has the same API, even though we load it from a different version
-    if (token == 'ETH' || token == 'XDAI') {
+    if (token == 'ETH' || token == 'XDAI' || token == 'IOTX') {
         return path + contract_type + '.json';
     } else {
         return path + contract_type + '.'+token+'.json';
@@ -125,7 +129,7 @@ function deployer_for_network() {
 }
 
 function deployRealitio() {
-    const is_erc20 = (token_name != 'ETH' && token_name != 'XDAI'); 
+    const is_erc20 = (token_name != 'ETH' && token_name != 'XDAI' && token_name != 'IOTX'); 
     const is_v21 = (token_name == 'XDAI'); 
     const tmpl = is_erc20 ? 'RealitioERC20' : (is_v21 ? 'Realitio_v2_1' : 'Realitio') ;
     var txt = 'deploying realitio';
